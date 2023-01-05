@@ -24,12 +24,13 @@ if __name__ == '__main__':
         evaluate = False
 
     for i in range(n_games):
-        observation = env.reset()
+        observation, info = env.reset()
         done = False
         score = 0
         while not done:
             action = agent.choose_action(observation, evaluate)
-            observation_, reward, done, info = env.step(action)
+            observation_, reward, terminated, truncated, info = env.step(action)
+            done = terminated or truncated
             score += reward
             agent.store_transition(observation, action, reward,
                                    observation_, done)
