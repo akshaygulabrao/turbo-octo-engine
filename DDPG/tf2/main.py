@@ -2,12 +2,14 @@ import gym
 import numpy as np
 from agent import Agent
 from utils import plot_learning_curve, manage_memory
+from dronesim import DroneSim
+from gym.wrappers import FlattenObservation
 
 if __name__ == '__main__':
     manage_memory()
-    env = gym.make('LunarLanderContinuous-v2')
-    agent = Agent(input_dims=env.observation_space.shape, env=env,
-                  n_actions=env.action_space.shape[0],
+    env = FlattenObservation(DroneSim(render_mode="human"))
+    agent = Agent(input_dims=(4,), env=env,
+                  n_actions=(2,),
                   alpha=0.0001, beta=0.001)
     n_games = 1000
 

@@ -56,6 +56,8 @@ class Agent:
         self.memory.store_transition(state, action, reward, new_state, done)
 
     def save_models(self):
+        if self.memory.mem_cntr < self.batch_size:
+            return
         print('... saving models ...')
         self.actor.save(self.chkpt_dir+'actor')
         self.target_actor.save(self.chkpt_dir+'target_actor')
@@ -75,7 +77,7 @@ class Agent:
         state = tf.convert_to_tensor([observation], dtype=tf.float32)
         actions = self.actor(state)
         if not evaluate:
-            actions += tf.random.normal(shape=[self.n_actions],
+            actions += tf.random.normal(shape=((1,2)),
                                         mean=0.0, stddev=self.noise)
         # note that if the env has an action > 1, we have to multiply by
         # max action at some point
@@ -86,7 +88,7 @@ class Agent:
     def learn(self):
         if self.memory.mem_cntr < self.batch_size:
             return
-
+        print('Learning Started')
         state, action, reward, new_state, done = \
             self.memory.sample_buffer(self.batch_size)
 
